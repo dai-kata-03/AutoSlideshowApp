@@ -78,27 +78,40 @@ public class MainActivity extends AppCompatActivity {
                 null  // ソート (null = ソートなし)
         );
 
+        // テキスト及びイメージ画像の初期化
         mtextView2 = (TextView) findViewById(R.id.textView2);
+        ImageView imageVIew = (ImageView) findViewById(R.id.imageView);
+
+        // ボタンの初期化
+        mnextButton = (Button) findViewById(R.id.nextButton);
+        mprevButton = (Button) findViewById(R.id.prevButton);
+        mplayButton = (Button) findViewById(R.id.playButton);
 
         if (cursor.moveToFirst()) {
 
-                // ボタンの初期化
-                mnextButton = (Button) findViewById(R.id.nextButton);
-                mprevButton = (Button) findViewById(R.id.prevButton);
-                mplayButton = (Button) findViewById(R.id.playButton);
+            // テキスト領域を非表示にする
+              mtextView2.setVisibility(View.GONE);
 
-                // 一番最初の画像を表示（初期表示）
-                int fieldIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID);
-                Long id = cursor.getLong(fieldIndex);
-                Uri imageUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);
+            // 一番最初の画像を表示（初期表示）
+            int fieldIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID);
+            Long id = cursor.getLong(fieldIndex);
+            Uri imageUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);
 
-                ImageView imageVIew = (ImageView) findViewById(R.id.imageView);
-                imageVIew.setImageURI(imageUri);
+            imageVIew.setImageURI(imageUri);
 
         } else {
-          // 画像データが存在しない場合
-          mtextView2.setText("画像データが1枚も存在しません。");
-          cursor.close();
+            // 画像データが存在しない場合
+
+            // イメージ領域を非表示にする
+            imageVIew.setVisibility(View.GONE);
+
+            // ボタン領域を非表示にする
+            mnextButton.setVisibility(View.GONE);
+            mprevButton.setVisibility(View.GONE);
+            mplayButton.setVisibility(View.GONE);
+
+            mtextView2.setText("画像データが1枚も存在しません。");
+            cursor.close();
         }
 
         // "進む"ボタンが押された際の処理
@@ -162,8 +175,6 @@ public class MainActivity extends AppCompatActivity {
                     autoplay = false;
                     mTimer.cancel();
                 } else {
-
-                    Log.d("DEBUG", "POINT 01");
 
                     // スライドショーの開始
                     autoplay = true;
